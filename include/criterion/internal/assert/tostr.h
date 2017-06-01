@@ -84,14 +84,28 @@ std::ostream &operator<<(std::ostream &s, char c)
 
 /* Generic implementation of cri_val_escape */
 
-template <typename T>
+template <typename T,
+    typename = typename std::enable_if<!std::is_array<T>::value>::type>
 constexpr T && cri_val_escape(T && t)
 {
     return std::move(t);
 }
 
-template <typename T>
+template <typename T,
+    typename = typename std::enable_if<!std::is_array<T>::value>::type>
 constexpr T &cri_val_escape(T &t)
+{
+    return t;
+}
+
+template <typename T, size_t N>
+constexpr T *cri_val_escape(T (&t)[N])
+{
+    return t;
+}
+
+template <typename T>
+constexpr T *cri_val_escape(T *t)
 {
     return t;
 }
